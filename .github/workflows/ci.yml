@@ -1,0 +1,27 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
+      - name: Deploy to Heroku (if tests pass)
+        if: success()
+        uses: akhilashaji/heroku-deploy@v1.3.3
+        with:
+          heroku_email: your_heroku_email
+          heroku_api_key: your_heroku_api_key
+          app_name: your_heroku_app_name
